@@ -9,6 +9,7 @@
 * **Video demo:** https://youtube.com/playlist?list=PLA7pHR4F5RG7yEJN9Kg90aQes7j7dtDWt
 
 * **Pitch deck:** https://liveuclac-my.sharepoint.com/:p:/g/personal/ucfncku_ucl_ac_uk/Ec5mqVO9ztFKgKjWk03uMUsBUshD_XR0DNpP1KR7etNDmQ?e=22BfDx
+
 ---
 
 ### 1. The Motivation for the Thinking Scents
@@ -22,7 +23,7 @@ In addition, although there are several oil diffusers on the market that can all
 Fig 1. The comparison of oil diffusers on current market
 
 
-
+---
 
 ### 2. Product
 
@@ -65,6 +66,7 @@ The design of the user interface follows the aesthetic and minimalist rules. Fig
 
 The idea to implement a share mode among devices is based on MQTT. Each switch has a code to represent the status. For example, ‘s1d’ means the first switch is disabled, and ‘s2e’ means the second switch is enabled. The switch status and sensor data are published to specific topics every two seconds, and other devices can subscribe to receive the message. It can be regarded as the incoming control commands, which are the same as the commands from the app. The same scents can be produced by synchronising the switch status.
 
+---
 
 
 ### 3. How it works
@@ -92,10 +94,11 @@ Control commands are the key to achieving remote control. Bluetooth serial proto
 
 Arduino script contains the functionality of DHT sensor reading, WiFi connection, MQTT connection and command recognition. Command recognition is the key to achieving remote control, which uses a combination of if and switch-case statements to retrieve the receiving messages. The essence of diffuser control is to adjust each switch on and off. Each switch has a boolean variable as a flag. The value will be determined according to the result of the statement, which triggers the voltage level of relevant GPIO pins. The share mode is based on the sharing of switch status. MQTT is used to publish each switch status, and meanwhile, another device status can be subscribed to sync the scents.
 
+---
 
 ### 4. Reflection
 
-<img width="700" alt="image" src="https://user-images.githubusercontent.com/52306317/166909401-19cb062d-036e-4fa4-ac20-7ca0dcba2ea8.png">
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/52306317/166909553-6ff41fff-46b0-433c-8ffa-55b976e57c7b.png">
 
 Fig 5. The prototype of the mobile App (left) and the enclosure (right)
 
@@ -105,6 +108,58 @@ Fig 5. The prototype of the mobile App (left) and the enclosure (right)
 The project has considered the choices between an ultrasonic mist maker and a nebulizing diffuser in the beginning. However, since the nebulizing diffuser will require more essential oil consumption as opposed to the amount for an ultrasonic mist maker within the same period of time and doesn’t have any humidifying effect, the project eventually chose to use ultrasonic mist makers. In addition, the initial idea is to directly soak mist makers into the water; however, it’s hard to fix the mist maker at specific positions while keeping them working as usual, so the cotton sticks and the mist maker holders (built by 3d printing) are used to offer a better usability.
 
 <img width="700" alt="image" src="https://user-images.githubusercontent.com/52306317/166909259-4b25a447-74b4-44d1-8f5b-b569d78db360.png">
+
+Fig 6. The initial idea (left) and the final product (right)
+
+
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/52306317/166909693-31d15a0b-a8ed-4738-ad3d-10bb0b9bb62e.png">
+
+Fig 7. The use of cotton sticks and mist maker holders
+
+
+#### 4.2 Flutter Application
+The flutter application, Arduino script and hardware components are integrated, and the performance is tested. The part of functionalities is implemented. Users can select modes, separately control each mist maker and customise the blending of scents. The responding speed is based on the quality of the Bluetooth connection. There is a delay due to message transmission, but the average is less than one second.
+
+
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/52306317/166909798-f25acaed-70f7-4c63-8c38-c2fb720899d2.png">
+
+Fig 8. Topic (ucfnmzz0) in MQTT Explorer
+
+However, the share mode is not fully completed. Currently, the system can upload status to the MQTT broker, as Figure 8 shows, and listen to the specific topic to receive shared messages. By manually publishing the relevant commands to the subscribed topic, the device can turn on and off the mist makers. The further task is to test publishment and subscription among multiple devices.
+
+
+---
+
+### 5. Future Modification 
+
+#### 5-1. Enclosure and Hardwares
+
+**1.	Add an on/off button on the device:** This button will allow users to turn on/off the device and switch between three modes, adding more usability to the application.
+
+**2.	Add water level sensors for each water tank:** Users might benefit from the water level monitors which help remind them to add more water in advance.
+
+**3.	Improve the waterproof level of the enclosure:** The project currently uses polylactic acid (PLA) material to build the enclosure. However, the device has a water leak after running for 30 minutes and the steam also humidifies the room inside the device which might have a negative impact on the mist makers.
+
+
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/52306317/166909970-cd4c6538-4bb1-407b-a837-ecbd29088ec1.png">
+
+Fig 9. Steam left in the room
+
+**4.	Reallocate the DHT sensor:** The DHT sensor is currently placed inside the house. When the mist makers start emitting water mist, the humidity and temperature inside the device will increase. The humidity and temperature reading will be affected. So in the next version. We will optimise the position of the DHT sensor to improve the accuracy.
+
+
+**5.	Design and manufacture PCB boards for commercial products:** PCB boards will make the products more stable and plug-and-play.
+
+
+#### 5-2. App Development
+
+**1.	Adjust the user interface of the App:** The mobile app can receive the DHT readings and display them on the screen but cannot obtain the real-time status of each mist maker under Auto mode and Share mode. The solution is to separate the current single page with a toggle switch ianto three pages for clarity and display the status for each mode.
+
+
+**2.	Adjust the command type:** The length of the control message can be reduced by using hexadecimal commands instead of commands with character types to increase the transfer speed and reduce the control delay.
+
+
+**3.	Adjust the communication way:** The share mode is dependent on MQTT and WiFi connection. An improvement is to use the phone’s WiFi instead of Arduino WiFi to reduce the cost and complexity of the device component.
 
 
 
