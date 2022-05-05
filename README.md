@@ -4,7 +4,7 @@
 ---
 
 
-**Proposed by Yumeng Cheng, Minghao Zhang, Vivian Ku**
+**Proposed by @roxy-cym, @virgolibra , @VivianKuKu**
 
 * **Video demo:** https://youtube.com/playlist?list=PLA7pHR4F5RG7yEJN9Kg90aQes7j7dtDWt
 
