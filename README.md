@@ -4,7 +4,7 @@
 ---
 
 
-**Proposed by @roxy-cym, @virgolibra , @VivianKuKu**
+**Proposed by [Yumeng Cheng](https://github.com/roxy-cym), [Minghao Zhang](https://github.com/virgolibra) , [Vivian Ku](https://github.com/VivianKuKu)**
 
 * **Video demo:** https://youtube.com/playlist?list=PLA7pHR4F5RG7yEJN9Kg90aQes7j7dtDWt
 
