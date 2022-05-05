@@ -22,6 +22,8 @@ In addition, although there are several oil diffusers on the market that can all
 Fig 1. The comparison of oil diffusers on current market
 
 
+
+
 ### 2. Product
 
 #### 2-1. Physical Device
@@ -31,6 +33,85 @@ The physical device accommodates water tanks and the hardware such as ultrasonic
 <img width="700" alt="image" src="https://user-images.githubusercontent.com/52306317/166908533-768f6300-affb-46f7-bbd4-1108b503d34a.png">
 
 Fig 2. The components of the Thinking Scents
+
+
+#### 2-2. App Development
+
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/52306317/166908628-c1ef5419-b50e-41a0-a10a-501ad48bc5c6.png">
+
+Fig 3. The user interfaces (From left to right: Auto mode, Manual mode (standard), Manual mode (percentage), Share mode)
+
+##### a.	Auto mode
+
+In auto mode, the temperature was divided into 3 categories, which are t<15; 15<=t<=25;t>=25 respectively. Moreover, the humidity was divided into two categories: t>15; t<=15. There are six combinations in total.
+
+Different scents will have different functions and features. Based on the features of the six combinations. I selected three scents with different tones: neutral tone-lavender, cold tone-tea tree, and warm tone-sweet orange.
+
+Tea tree will be used in hot weather. It can make people feel relaxed and calm down. Sweet orange will be used in cold weather. It can make people feel energetic and get rid of the cold. Lavender will be used in a moderate environment. It will help people’s minds and bodies calm down. It also will blend with tea tree and sweet orange according to different weather conditions.
+
+Table 1. The environmental conditions and the scents
+
+
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/52306317/166908727-dc7643c6-5b4f-4be0-b1c1-4ca8a05a5fc8.png">
+
+
+##### b.	Manual mode
+
+This is a simple flutter application to control the diffuser. The development procedure can be divided into Bluetooth connection, message transceive, and UI design. The Bluetooth functionality is based on the flutter_bluetooth_serial library. It builds an interface for Serial Port Protocol devices. The library supports device discovery, status monitoring, connecting multiple devices, and data transceiving.
+The design of the user interface follows the aesthetic and minimalist rules. Figures 3 (second and third from the left) are the main pages to control the diffuser. There is a toggle switch widget at the top of the page to select the mode. The temperature and humidity text boxes show the received real-time sensing data from the DHT sensor. The second toggle switch widget changes the standard mode and percentage mode. The standard mode is to turn on and off directly, while the percentage mode allows the user to customise the percentage of the concentration to create unique mixed scents. A method similar to Pulse-width modulation (PWM) is used. In a regular period, the duty cycle of the mist maker is regarded as the percentage of the scents. For example, to achieve 70% lavender and 40% sweet orange, in ten seconds, the mist maker for lavender is on for 7 seconds and the maker for sweet orange is on for 4 seconds. 
+
+
+##### c.	Share mode
+
+The idea to implement a share mode among devices is based on MQTT. Each switch has a code to represent the status. For example, ‘s1d’ means the first switch is disabled, and ‘s2e’ means the second switch is enabled. The switch status and sensor data are published to specific topics every two seconds, and other devices can subscribe to receive the message. It can be regarded as the incoming control commands, which are the same as the commands from the app. The same scents can be produced by synchronising the switch status.
+
+
+
+### 3. How it works
+
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/52306317/166908956-8339bab1-9b73-404d-86cc-233f0562c72d.png">
+
+Fig 4. Schematic of the prototype of Thinking Scents
+
+
+Figure 4 is the schematic of the diffuser system. The objective is to achieve three modes and is based on App control. Therefore, the Arduino Uno Wi-Fi development board is used, which has a built-in WiFi module. The basic idea is to develop a mobile application that users can turn on and off the diffuser, switch three modes and set custom scents combinations. The HC-05 Bluetooth module is used for serial communication with the board, which can transmit and receive massage packages for remotely control. The WiFi module is used to connect to the MQTT broker, so each board can publish the current diffuser status to share and subscribe status of other devices to synchronise the scents. The mist maker transposes the high-frequency sound waves into mechanical energy. The liquid is broken into mist when it exits the surface of the mist maker. There are three mist makers for this product, which are controlled by the Arduino GPIO pins. The GPIO pins have the current limitation as a protection, which affects the power input for each maker. Therefore, a 4-channel relay is used to ensure the operation of the system.
+
+
+
+#### 3-1. Control Commands
+
+Table 2. Control Commands
+
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/52306317/166909056-2900326d-9fea-44b5-aaa7-5ee38dddb21e.png">
+
+
+Control commands are the key to achieving remote control. Bluetooth serial protocol sends one-byte character at a time. The message is sent according to the interaction from the app and received sequentially by Arduino. Each incoming message is stored in a temporary char array, which will be iterated to retrieve each character by if statements. For example, the percentage means mode setting, and the hashtag means switch status. The third character represents the number of switches, and ‘e’ means enable. The series commands correspond to different instructions, which could convert the changing of a widget status to the signal changing for GPIO pins via Bluetooth.
+
+
+#### 3-2. Arduino Script
+
+Arduino script contains the functionality of DHT sensor reading, WiFi connection, MQTT connection and command recognition. Command recognition is the key to achieving remote control, which uses a combination of if and switch-case statements to retrieve the receiving messages. The essence of diffuser control is to adjust each switch on and off. Each switch has a boolean variable as a flag. The value will be determined according to the result of the statement, which triggers the voltage level of relevant GPIO pins. The share mode is based on the sharing of switch status. MQTT is used to publish each switch status, and meanwhile, another device status can be subscribed to sync the scents.
+
+
+### 4. Reflection
+
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/52306317/166909401-19cb062d-036e-4fa4-ac20-7ca0dcba2ea8.png">
+
+Fig 5. The prototype of the mobile App (left) and the enclosure (right)
+
+
+#### 4.1 The iteration of the physical device
+ 
+The project has considered the choices between an ultrasonic mist maker and a nebulizing diffuser in the beginning. However, since the nebulizing diffuser will require more essential oil consumption as opposed to the amount for an ultrasonic mist maker within the same period of time and doesn’t have any humidifying effect, the project eventually chose to use ultrasonic mist makers. In addition, the initial idea is to directly soak mist makers into the water; however, it’s hard to fix the mist maker at specific positions while keeping them working as usual, so the cotton sticks and the mist maker holders (built by 3d printing) are used to offer a better usability.
+
+<img width="700" alt="image" src="https://user-images.githubusercontent.com/52306317/166909259-4b25a447-74b4-44d1-8f5b-b569d78db360.png">
+
+
+
+
+
+
+
 
 
 
