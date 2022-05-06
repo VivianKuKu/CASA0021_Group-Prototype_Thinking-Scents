@@ -1,7 +1,6 @@
 # Thinking Scents 
 
 ### “An essential oil diffuser that knows what you need and delivers scents to your beloved one.”
----
 
 
 **Proposed by [Yumeng Cheng](https://github.com/roxy-cym), [Minghao Zhang](https://github.com/virgolibra) , [Vivian Ku](https://github.com/VivianKuKu)**
